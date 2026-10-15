@@ -1,0 +1,9 @@
+# 生成的日报（每天自动生成，不入库）
+output/
+
+# Python 缓存
+__pycache__/
+*.pyc
+
+# macOS
+.DS_Store

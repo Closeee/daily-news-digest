@@ -1,0 +1,8 @@
+{
+  "sources": [
+    { "name": "Wired 连线", "field": "科技", "type": "rss", "url": "https://www.wired.com/feed/rss" },
+    { "name": "联合早报·国际", "field": "国际", "type": "zaobao", "url": "https://www.zaobao.com/realtime/world" },
+    { "name": "联合早报·全球财经", "field": "财经", "type": "zaobao", "url": "https://www.zaobao.com/finance/world" },
+    { "name": "安防知识网 a&s", "field": "安防", "type": "asmag", "url": "https://www.asmag.com.cn/news/" }
+  ]
+}
