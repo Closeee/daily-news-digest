@@ -19,14 +19,17 @@
 ## 快速开始
 
 ```bash
-git clone https://github.com/<你的用户名>/daily-news-digest.git
+git clone https://github.com/Closeee/daily-news-digest.git
 cd daily-news-digest
 
 # Windows
 pip install -r requirements.txt
 python fetch.py
 
-# macOS
+# macOS（推荐：一键装依赖）
+bash setup.sh
+
+# macOS（或手动）
 pip3 install -r requirements.txt
 python3 fetch.py
 ```
