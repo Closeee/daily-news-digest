@@ -6,5 +6,9 @@
 *.json text eol=lf
 *.txt text eol=lf
 
+# Windows 批处理必须 CRLF：cmd 解析 LF-only 的 .bat 时，goto 标签等处会出问题
+# （仓库内仍存 LF，检出到 Windows 时还原成 CRLF）
+*.bat text eol=crlf
+
 # 字体是二进制，不做换行转换
 *.ttf binary

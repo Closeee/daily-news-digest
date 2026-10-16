@@ -43,11 +43,37 @@ python3 fetch.py
 
 ### Windows（任务计划程序）
 
-```bat
-schtasks /create /tn "每日新闻简报" /tr "\"C:\Python314\python.exe\" \"<脚本目录>\fetch.py\"" /sc daily /st 08:30
+仓库里自带 `run.bat`（Windows 启动器，跑完会写日志到 `output/run.log`）。
+
+**⚠️ 不要用 `schtasks /create` 命令行注册**——如果路径含中文，命令行按 GBK 写入、任务 XML 按 UTF-16 存，任务计划程序读出来是乱码路径，会静默失败（任务"跑"了但什么都没生成，退出码 2）。**改用 PowerShell 注册**：
+
+```powershell
+# 在管理员 PowerShell 里运行（S4U 需要管理员权限）
+$dir = '<脚本目录>'          # fetch.py 所在目录
+$action    = New-ScheduledTaskAction -Execute "$dir\run.bat" -WorkingDirectory $dir
+$trigger   = New-ScheduledTaskTrigger -Daily -At 8:30AM
+$settings  = New-ScheduledTaskSettingsSet -StartWhenAvailable -ExecutionTimeLimit (New-TimeSpan -Hours 1)
+$principal = New-ScheduledTaskPrincipal -UserId "$env:COMPUTERNAME\$env:USERNAME" -LogonType S4U
+Register-ScheduledTask -TaskName 'DailyNewsDigest' -Action $action -Trigger $trigger `
+    -Settings $settings -Principal $principal -Force
 ```
 
-把 `<脚本目录>` 换成 `fetch.py` 所在目录；`C:\Python314\python.exe` 换成你的 Python 路径（`where python` 查看）。
+要点：
+
+- 任务名用**英文** `DailyNewsDigest`，避免中文编码坑
+- `-LogonType S4U`：锁屏、未登录也能跑，且**不需要存密码**（必须管理员权限注册）
+- `-StartWhenAvailable`：8:30 没开机的话，开机后自动补跑一次
+- 想确认有没有跑成功：`(Get-ScheduledTaskInfo -TaskName DailyNewsDigest).LastTaskResult`，`0` 才是成功
+
+### 如何停止 / 卸载
+
+双击项目目录里的 **`停止.bat`** 即可（会弹一次 UAC 请点是）。它会删除计划任务并验证结果。之后日报不再自动更新，但已生成的 HTML 都还在。
+
+手动等价命令（管理员 PowerShell）：
+
+```powershell
+Unregister-ScheduledTask -TaskName 'DailyNewsDigest' -Confirm:$false
+```
 
 ### macOS（cron）
 
